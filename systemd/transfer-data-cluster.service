@@ -1,0 +1,11 @@
+[Unit]
+Description=Transfer Data Cluster Service
+
+[Service]
+ExecStart=/bin/bash {ABSOLUTE_PATH_TO_WORKING_DIR}/to_cluster_wrapper.sh
+WorkingDirectory={ABSOLUTE_PATH_TO_WORKING_DIR}
+StandardOutput=file:{ABSOLUTE_PATH_TO_WORKING_DIR}/log
+StandardError=file:{ABSOLUTE_PATH_TO_WORKING_DIR}/err
+
+[Install]
+WantedBy=multi-user.target
