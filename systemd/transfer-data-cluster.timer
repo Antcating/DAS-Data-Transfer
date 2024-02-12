@@ -1,0 +1,9 @@
+[Unit]
+Description=Run transfer of Febus data to HUJI cluster every 3 days
+
+[Timer]
+OnActiveSec=3d
+Persistent=true
+
+[Install]
+WantedBy=timers.target
