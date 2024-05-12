@@ -17,9 +17,9 @@ set local_path "{ABSOLUTE_PATH_TO_CONCATENATED_DATA_DIR}"
 # read OTP password using oathtool from the file
 set otp [exec oathtool --totp -b $otp_secret]
 
-# set to_sync [exec find $local_path -type f -mtime -60 -mtime +20 -printf "%P\n"]
-set to_sync [exec find $local_path -type d -mtime -15 -mtime +5  -printf "%P\n"]
+set to_sync [exec find $local_path -type d -mtime -10 -mtime +3  -printf "%P\n"]
 #set to_sync [exec find $local_path -type f -printf "%P\n"]
+
 puts "Files to sync: $to_sync"
 # Write the list of relative paths to the file to_sync.txt
 exec printf "%s" "$to_sync" > to_sync.txt
