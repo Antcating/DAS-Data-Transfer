@@ -14,11 +14,10 @@ set local_port 13579
 # Remote (cluster) host and port
 set remote_host {remote_host}
 set remote_port 22
-set bridge_host {bridge_host}
 # Bridge host is used to connect to the cluster
-set server {server}
-# Username for the cluster
-set username {username}
+set bridge_host {bridge_host}
+# remote_user for the cluster
+set remote_user {remote_user}
 # Password for the cluster
 set password [exec cat ./.otp/hurcs-pass]
 # OTP secret for the cluster
@@ -41,7 +40,7 @@ exec printf "%s" "$to_sync" > to_sync.txt
 # Read last job ID from the file
 set last_job_id [exec cat ./last_job.txt]
 # Set hostname from the server to the variable
-set remote_PID [spawn ssh -o StrictHostKeyChecking=accept-new -J $username@$bridge_host $username@$remote_host]
+set remote_PID [spawn ssh -o StrictHostKeyChecking=accept-new -J $remote_user@$bridge_host $remote_user@$remote_host]
 expect "(OTP) Password:"
 send "$otp\r"
 expect "(IDng) Password:"
@@ -79,7 +78,7 @@ sleep 30
 set otp [exec oathtool --totp -b $otp_secret]
 
 # Create SSH tunnel to the server using the hostname and port
-set tunnel_PID [spawn ssh -oStrictHostKeyChecking=no -J $username@$bridge_host -L $local_port:$remote_hostname:$remote_port $username@$remote_hostname.cs.huji.ac.il]
+set tunnel_PID [spawn ssh -oStrictHostKeyChecking=no -J $remote_user@$bridge_host -L $local_port:$remote_hostname:$remote_port $remote_user@$remote_hostname.cs.huji.ac.il]
 expect "(OTP) Password:"
 send "$otp\r"
 expect "(IDng) Password:"
@@ -90,7 +89,7 @@ expect "Loaded"
 
 puts "Tunnel created"
 # Start rsync with the list of files to sync
-spawn rsync -arv --info=progress2 -e "ssh -oStrictHostKeyChecking=no -p $local_port" --exclude="*"  --files-from=to_sync.txt $local_path $username@localhost:$remote_path --log-file=rsync.log
+spawn rsync -arv --info=progress2 -e "ssh -oStrictHostKeyChecking=no -p $local_port" --exclude="*"  --files-from=to_sync.txt $local_path $remote_user@localhost:$remote_path --log-file=rsync.log
 # Wait until rsync finishes or fails
 expect {
     "(IDng) Password:" {
